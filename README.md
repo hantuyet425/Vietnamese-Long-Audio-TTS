@@ -6,7 +6,7 @@ Công cụ chuyển văn bản tiếng Việt thành audio bằng giọng đọc
 
 Giao diện gồm khung nhập nội dung, chọn **Nam Minh / Hoài My**, chọn tốc độ, khu vực kết quả có đồng hồ thời gian chạy và lịch sử audio. Mỗi lần bấm **Tạo audio**, hệ thống cấp mã \`AU 1\`, \`AU 2\`, ... ngay khi nhận yêu cầu. Mã không được tính lại theo thứ tự hoàn tất: nếu \`AU 2\` xong trước \`AU 1\`, số AU vẫn giữ nguyên.
 
-Khi tạo audio, lượt mới được xếp vào hàng đợi và tổng hợp lần lượt để hạn chế các yêu cầu đồng thời tới dịch vụ. Trạng thái hiển thị gồm đang chờ, đang tạo, hoàn tất hoặc thất bại. Khi thành công, có thể nghe trực tiếp hoặc tải MP3. Nội dung văn bản được lưu tạm trong cơ sở dữ liệu khi công việc đang chờ/xử lý và tự xóa khỏi bản ghi khi đã thành công hoặc thất bại; lịch sử vẫn giữ mã AU, giọng, tốc độ, trạng thái và đường dẫn audio.
+Khi tạo audio, lượt mới được xếp vào hàng đợi và tổng hợp lần lượt để hạn chế các yêu cầu đồng thời tới dịch vụ. Trạng thái hiển thị gồm đang chờ, đang tạo, hoàn tất hoặc thất bại. Khi thành công, có thể nghe trực tiếp hoặc tải MP3. Nội dung văn bản được lưu tạm trong cơ sở dữ liệu khi công việc đang chờ/xử lý và tự xóa khỏi bản ghi khi đã thành công hoặc thất bại; lịch sử vẫn giữ mã AU, giọng, tốc độ, trạng thái và đường dẫn audio. File lưu và tên khi tải xuống dùng đúng mã được cấp lúc gửi yêu cầu, dạng `AU 1.mp3`, `AU 2.mp3`, ...; vì mã dựa trên ID của lượt gửi chứ không dựa trên thời điểm hoàn tất, AU 2 hoàn thành trước AU 1 vẫn giữ đúng tên của nó.
 
 ### Chạy trên máy cá nhân
 
@@ -38,10 +38,10 @@ Repository có file [render.yaml](render.yaml) để triển khai dạng Bluepri
 
 Nếu muốn chạy trực tiếp từ GitHub mà không dùng giao diện web:
 
-1. Sửa file [\`kichban.txt\`](kichban.txt) ở thư mục gốc rồi commit.
-2. Mở **Actions → Generate long audio → Run workflow**.
-3. Chọn giọng Nam Minh hoặc Hoài My, chọn tốc độ, rồi chạy workflow.
-4. Khi hoàn tất, mở lượt chạy và tải artifact \`audio-output\`.
+1. Sửa file [\`kichban.txt\`](kichban.txt) ở thư mục gốc rồi commit, hoặc chạy thủ công qua **Actions → Generate long audio → Run workflow**.
+2. Khi chạy thủ công, chọn giọng Nam Minh hoặc Hoài My và tốc độ đọc.
+3. Mỗi lượt chạy có mã theo thứ tự GitHub cấp lúc tạo run: file đầu ra dạng \`AU 1.mp3\`, \`AU 2.mp3\`, ... và artifact tương ứng dạng \`AU 1\`, \`AU 2\`, ...
+4. Tải artifact của đúng lượt chạy. Nếu chạy lại cùng một lượt bị lỗi, nó giữ mã AU của lượt đó; lượt chạy mới tiếp theo nhận số mới.
 
 Workflow Actions tạo một MP3 đầu ra từ toàn bộ file \`kichban.txt\`; Edge-TTS tự xử lý việc chia luồng văn bản nội bộ theo giao thức của nó. Lượt chạy này độc lập với thư viện AU được tạo trong giao diện web.
 
