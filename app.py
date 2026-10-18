@@ -154,7 +154,7 @@ def set_job_status(
 def process_job(job_id: int) -> None:
     with connect_db() as db:
         row = db.execute(
-            "SELECT id, voice, rate, source_text FROM jobs WHERE id=?",
+            "SELECT id, status, voice, rate, source_text FROM jobs WHERE id=?",
             (job_id,),
         ).fetchone()
 
