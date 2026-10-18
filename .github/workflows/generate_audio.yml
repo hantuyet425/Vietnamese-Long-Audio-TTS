@@ -103,7 +103,7 @@ jobs:
               --attempts 3
 
       - name: Upload MP3
-        if: ${{ success() && hashFiles('outputs/AU ${{ github.run_number }}.mp3') != '' }}
+        if: ${{ success() && hashFiles(format('outputs/AU {0}.mp3', github.run_number)) != '' }}
         uses: actions/upload-artifact@v4
         with:
           name: AU ${{ github.run_number }}
@@ -113,7 +113,7 @@ jobs:
           compression-level: 0
 
       - name: Upload partial audio for diagnosis if generation fails
-        if: ${{ failure() && hashFiles('outputs/AU ${{ github.run_number }}.partial.mp3') != '' }}
+        if: ${{ failure() && hashFiles(format('outputs/AU {0}.partial.mp3', github.run_number)) != '' }}
         uses: actions/upload-artifact@v4
         with:
           name: AU ${{ github.run_number }} - partial diagnostic
