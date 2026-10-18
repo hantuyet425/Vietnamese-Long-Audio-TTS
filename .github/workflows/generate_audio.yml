@@ -18,6 +18,13 @@ on:
         default: "1.25"
         options: ["0.75", "1.0", "1.25", "1.5", "1.75"]
 
+  # Tự tạo audio khi kichban.txt được cập nhật (kể cả khi con ghi file qua GitHub).
+  push:
+    branches:
+      - main
+    paths:
+      - kichban.txt
+
 permissions:
   contents: read
 
@@ -73,8 +80,8 @@ jobs:
 
       - name: Generate one MP3 from the whole script
         env:
-          VOICE_CHOICE: ${{ inputs.voice }}
-          RATE: ${{ inputs.rate }}
+          VOICE_CHOICE: ${{ inputs.voice || 'Nam Minh' }}
+          RATE: ${{ inputs.rate || '1.25' }}
         run: |
           case "$VOICE_CHOICE" in
             "Nam Minh") VOICE_ID="vi-VN-NamMinhNeural" ;;
