@@ -1,10 +1,10 @@
 # Vietnamese Long Audio TTS
 
-Công cụ chuyển văn bản tiếng Việt thành audio bằng giọng đọc Edge Neural. Có **giao diện web** để nhập văn bản, chọn giọng/tốc độ, xem thời gian tạo, nghe và tải audio; đồng thời vẫn giữ workflow GitHub Actions để tạo MP3 từ file \`kichban.txt\`.
+Công cụ chuyển văn bản tiếng Việt thành audio bằng giọng đọc Edge Neural. Có **giao diện web** để nhập văn bản, chọn giọng/tốc độ, xem thời gian tạo, nghe và tải audio; đồng thời vẫn giữ workflow GitHub Actions để tạo MP3 từ file `kichban.txt`.
 
 ## Giao diện web
 
-Giao diện gồm khung nhập nội dung, chọn **Nam Minh / Hoài My**, chọn tốc độ, khu vực kết quả có đồng hồ thời gian chạy và lịch sử audio. Mỗi lần bấm **Tạo audio**, hệ thống cấp mã \`AU 1\`, \`AU 2\`, ... ngay khi nhận yêu cầu. Mã không được tính lại theo thứ tự hoàn tất: nếu \`AU 2\` xong trước \`AU 1\`, số AU vẫn giữ nguyên.
+Giao diện gồm khung nhập nội dung, chọn **Nam Minh / Hoài My**, chọn tốc độ, khu vực kết quả có đồng hồ thời gian chạy và lịch sử audio. Mỗi lần bấm **Tạo audio**, hệ thống cấp mã `AU 1`, `AU 2`, ... ngay khi nhận yêu cầu. Mã không được tính lại theo thứ tự hoàn tất: nếu `AU 2` xong trước `AU 1`, số AU vẫn giữ nguyên.
 
 Khi tạo audio, lượt mới được xếp vào hàng đợi và tổng hợp lần lượt để hạn chế các yêu cầu đồng thời tới dịch vụ. Trạng thái hiển thị gồm đang chờ, đang tạo, hoàn tất hoặc thất bại. Khi thành công, có thể nghe trực tiếp hoặc tải MP3. Nội dung văn bản được lưu tạm trong cơ sở dữ liệu khi công việc đang chờ/xử lý và tự xóa khỏi bản ghi khi đã thành công hoặc thất bại; lịch sử vẫn giữ mã AU, giọng, tốc độ, trạng thái và đường dẫn audio. File lưu và tên khi tải xuống dùng đúng mã được cấp lúc gửi yêu cầu, dạng `AU 1.mp3`, `AU 2.mp3`, ...; vì mã dựa trên ID của lượt gửi chứ không dựa trên thời điểm hoàn tất, AU 2 hoàn thành trước AU 1 vẫn giữ đúng tên của nó.
 
@@ -12,25 +12,25 @@ Khi tạo audio, lượt mới được xếp vào hàng đợi và tổng hợp
 
 Cần Python 3.11 trở lên và kết nối Internet. Mở terminal tại thư mục repository rồi chạy:
 
-\`\`\`bash
+```bash
 python -m pip install -r requirements.txt
 python app.py
-\`\`\`
+```
 
-Mở địa chỉ [http://127.0.0.1:5000](http://127.0.0.1:5000). Không cần chạy Flask bằng lệnh riêng nào khác. Audio và lịch sử mặc định được lưu trong thư mục runtime \`data/\`, thư mục này đã được thêm vào \`.gitignore\` để tránh commit nhầm audio hoặc cơ sở dữ liệu riêng tư.
+Mở địa chỉ [http://127.0.0.1:5000](http://127.0.0.1:5000). Không cần chạy Flask bằng lệnh riêng nào khác. Audio và lịch sử mặc định được lưu trong thư mục runtime `data/`, thư mục này đã được thêm vào `.gitignore` để tránh commit nhầm audio hoặc cơ sở dữ liệu riêng tư.
 
 ### Đưa website lên Internet bằng Render
 
 Repository có file [render.yaml](render.yaml) để triển khai dạng Blueprint trên Render:
 
 1. Trong Render, chọn **New → Blueprint**, rồi kết nối repository này.
-2. Khi được yêu cầu, đặt biến \`WEB_APP_PASSWORD\` thành một mật khẩu riêng, đủ mạnh. Không đăng nó trong mã nguồn hoặc trong file công khai.
-3. Blueprint tạo web service cùng ổ đĩa lưu trữ bền vững ở \`/var/data\`. Ổ đĩa đó giữ lại lịch sử và MP3 qua các lần khởi động lại. Để đổi dung lượng, chỉnh \`sizeGB\` trong \`render.yaml\` trước khi triển khai.
+2. Khi được yêu cầu, đặt biến `WEB_APP_PASSWORD` thành một mật khẩu riêng, đủ mạnh. Không đăng nó trong mã nguồn hoặc trong file công khai.
+3. Blueprint tạo web service cùng ổ đĩa lưu trữ bền vững ở `/var/data`. Ổ đĩa đó giữ lại lịch sử và MP3 qua các lần khởi động lại. Để đổi dung lượng, chỉnh `sizeGB` trong `render.yaml` trước khi triển khai.
 4. Sau khi deploy, mở URL Render được cấp. Đăng nhập bằng mật khẩu bạn đã đặt.
 
 **Lưu ý chi phí:** cấu hình Blueprint dùng web service và persistent disk; Render có thể tính phí cho các tài nguyên này. Hãy kiểm tra gói và giá hiện hành trong tài khoản Render trước khi tạo service.
 
-**Bảo mật:** không công khai URL website cùng mật khẩu. Khi chạy trên Internet, ứng dụng từ chối truy cập nếu chưa cấu hình \`WEB_APP_PASSWORD\`. Cấu hình \`WEB_SESSION_SECRET\` được Blueprint tạo tự động. Audio được lưu trên ổ đĩa của service; chỉ người đã đăng nhập mới được nghe/tải qua website. Chỉ một tiến trình Gunicorn worker được sử dụng để tránh chạy trùng các tác vụ nền.
+**Bảo mật:** không công khai URL website cùng mật khẩu. Khi chạy trên Internet, ứng dụng từ chối truy cập nếu chưa cấu hình `WEB_APP_PASSWORD`. Cấu hình `WEB_SESSION_SECRET` được Blueprint tạo tự động. Audio được lưu trên ổ đĩa của service; chỉ người đã đăng nhập mới được nghe/tải qua website. Chỉ một tiến trình Gunicorn worker được sử dụng để tránh chạy trùng các tác vụ nền.
 
 **Khả năng phục hồi:** tác vụ đang dở sẽ được xếp lại sau khi tiến trình ứng dụng khởi động lại; việc đó sẽ tổng hợp lại toàn bộ văn bản của AU đang dở, không tiếp tục từ đúng giây audio đã dừng. Các AU đã hoàn thành vẫn giữ nguyên mã và file nếu ổ đĩa bền vững còn dữ liệu.
 
@@ -38,14 +38,14 @@ Repository có file [render.yaml](render.yaml) để triển khai dạng Bluepri
 
 Nếu muốn chạy trực tiếp từ GitHub mà không dùng giao diện web:
 
-1. Sửa file [\`kichban.txt\`](kichban.txt) ở thư mục gốc rồi commit, hoặc chạy thủ công qua **Actions → Generate long audio → Run workflow**.
+1. Sửa file [`kichban.txt`](kichban.txt) ở thư mục gốc rồi commit, hoặc chạy thủ công qua **Actions → Generate long audio → Run workflow**.
 2. Khi chạy thủ công, chọn giọng Nam Minh hoặc Hoài My và tốc độ đọc.
-3. Mỗi lượt chạy có mã theo thứ tự GitHub cấp lúc tạo run: file đầu ra dạng \`AU 1.mp3\`, \`AU 2.mp3\`, ... và artifact tương ứng dạng \`AU 1\`, \`AU 2\`, ...
+3. Mỗi lượt chạy có mã theo thứ tự GitHub cấp lúc tạo run: file đầu ra dạng `AU 1.mp3`, `AU 2.mp3`, ... và artifact tương ứng dạng `AU 1`, `AU 2`, ...
 4. Tải artifact của đúng lượt chạy. Nếu chạy lại cùng một lượt bị lỗi, nó giữ mã AU của lượt đó; lượt chạy mới tiếp theo nhận số mới.
 
-Workflow Actions tạo một MP3 đầu ra từ toàn bộ file \`kichban.txt\`; Edge-TTS tự xử lý việc chia luồng văn bản nội bộ theo giao thức của nó. Lượt chạy này độc lập với thư viện AU được tạo trong giao diện web.
+Workflow Actions tạo một MP3 đầu ra từ toàn bộ file `kichban.txt`; Edge-TTS tự xử lý việc chia luồng văn bản nội bộ theo giao thức của nó. Lượt chạy này độc lập với thư viện AU được tạo trong giao diện web.
 
-**Cảnh báo repository công khai:** \`kichban.txt\` hiện được Git theo dõi trong repository Public, nên nội dung trong file là công khai. Hãy chuyển repository sang Private hoặc loại bỏ văn bản nhạy cảm trước khi đưa truyện riêng tư lên GitHub.
+**Cảnh báo repository công khai:** `kichban.txt` hiện được Git theo dõi trong repository Public, nên nội dung trong file là công khai. Hãy chuyển repository sang Private hoặc loại bỏ văn bản nhạy cảm trước khi đưa truyện riêng tư lên GitHub.
 
 ## Lỗi Edge-TTS 403/429
 
