@@ -91,30 +91,33 @@ jobs:
 
           # One whole-script synthesis and one output MP3.
           # Edge-TTS may internally stream text fragments to its service.
+          OUTPUT_FILE="outputs/AU ${{ github.run_number }}.mp3"
+          echo "AU ID: ${{ github.run_number }}"
+          echo "Output: $OUTPUT_FILE"
           timeout --signal=INT --kill-after=30s 340m \
             python generate_audio.py \
               --input kichban.txt \
-              --output outputs/audio_youtube.mp3 \
+              --output "$OUTPUT_FILE" \
               --voice "$VOICE_ID" \
               --rate "$RATE" \
               --attempts 3
 
       - name: Upload MP3
-        if: ${{ success() && hashFiles('outputs/audio_youtube.mp3') != '' }}
+        if: ${{ success() && hashFiles('outputs/AU ${{ github.run_number }}.mp3') != '' }}
         uses: actions/upload-artifact@v4
         with:
-          name: audio-output
-          path: outputs/audio_youtube.mp3
+          name: AU ${{ github.run_number }}
+          path: outputs/AU ${{ github.run_number }}.mp3
           if-no-files-found: error
           retention-days: 14
           compression-level: 0
 
       - name: Upload partial audio for diagnosis if generation fails
-        if: ${{ failure() && hashFiles('outputs/audio_youtube.partial.mp3') != '' }}
+        if: ${{ failure() && hashFiles('outputs/AU ${{ github.run_number }}.partial.mp3') != '' }}
         uses: actions/upload-artifact@v4
         with:
-          name: partial-audio-diagnostic
-          path: outputs/audio_youtube.partial.mp3
+          name: AU ${{ github.run_number }} - partial diagnostic
+          path: outputs/AU ${{ github.run_number }}.partial.mp3
           if-no-files-found: ignore
           retention-days: 2
           compression-level: 0
