@@ -174,7 +174,7 @@ def process_job(job_id: int) -> None:
 
     voice = row["voice"]
     rate = row["rate"]
-    output_path = AUDIO_DIR / f"au_{job_id:06d}.mp3"
+    output_path = AUDIO_DIR / f"AU {job_id}.mp3"
     AUDIO_DIR.mkdir(parents=True, exist_ok=True)
     set_job_status(job_id, "generating", started_at=utc_now(), error=None)
 
@@ -385,7 +385,7 @@ def get_audio(job_id: int):
         path,
         mimetype="audio/mpeg",
         as_attachment=download,
-        download_name=f"AU_{job_id}.mp3",
+        download_name=f"AU {job_id}.mp3",
         conditional=True,
         max_age=0,
     )
